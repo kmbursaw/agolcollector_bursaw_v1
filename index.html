@@ -6,7 +6,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
 
-    
+        <!-- title of lab 4-->
         <title>Data Collector for AGOL</title>
 
 
@@ -16,41 +16,104 @@
 
         <!-- loading the modules-->
         <script>
+            //adding widgets and functions
             require([
                 "esri/config", 
                 "esri/Map", 
-                "esri/views/MapView" 
-            ], (esriConfig, Map, MapView) => {
+                "esri/views/MapView",
+                "esri/widgets/Locate",
+                "esri/widgets/Search",
+                "esri/layers/FeatureLayer" 
+            ], (esriConfig, Map, MapView, Locate, Search, FeatureLayer) => {
 
                 //api key and basemap layer set
                 esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurFa5WfXMQlRQPnfNYzLFFYga1fw0U3EB74KznnD3Q-j0AB9HdCmpOghHtkHppjTP_28Gd65ao6PCq3TkG0tJ3hZXDgrukv8aAoFxebfSdW8q97PlMsrfq7nQ5seQfazEIltTu-OWRzaW7f4FLTvO2sPZ-GI21IUJHlx3EgphVNeA0XX7woV69BRNK0kyac0EPDamoSzTK8mrrLhPaWW2zQiKQ4JWB0Okf4wgrn3A9wN3AT1_R7CKhNBZ"
 
+                //setting basemap
                 const map = new Map({
                     basemap: "satellite"
                 });
 
+                //setting map center and zoom
                 const view = new MapView({
-                    container: "viewDiv", // Reference to the DOM node that will contain the view
-                    map: map // References the map object
+                    map: map, // References the map object
+                    center: [-97.085569, 37.768962],
+                    zoom: 3,
+                    container: "viewDiv" // Reference to the DOM node that will contain the view
                 });
+
+                //constructing locate widget
+                const locateBtn = new Locate({
+                    view: view
+                });
+
+                // Add the locate widget to the top left corner of the view
+                view.ui.add(locateBtn, {
+                    position: "top-left"
+                });
+
+                //constructing search widget
+                const searchWidget = new Search({
+                    view: view
+                });
+                // Adds the search widget below other elements in
+                // the top bottom left corner of the view
+                view.ui.add(searchWidget, {
+                    position: "bottom-left",
+                    index: 2
+                });
+
+                // Create featurelayer from feature service 
+                const layer = new FeatureLayer({ 
+                    // URL to the service 
+                    url: "https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/survey123_0c29460a922a441ea76a6d582b143f77_results/FeatureServer"
+                });
+
+                //adds survey layer to map/app
+                map.add(layer);
+
 
             });
             </script>
 
-        <style>  html,  
-        body,  
-        #viewDiv {  
-            padding: 0;  
-            margin: 0;  
-            height: 100%;  
-            width: 100%;  
+        <!-- CSS scripts for overall style and add record button-->
+        <style>  
+            html,  
+            body,  
+            #viewDiv {  
+                padding: 0;  
+                margin: 0;  
+                height: 100%;  
+                width: 100%;  
             }  
+
+
+
+            .addRecordBtn {
+                position: absolute;
+                z-index: 10;
+                top: 10px;
+                right: 10px;
+                background-color: #0079c1;
+                color: white;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-size: 14px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .addRecordBtn:hover {
+                background-color: #005a87;
+            }
         </style>
 
     </head>
     <body>
 
         <!-- creating section to hold map -->
+        <a href="https://arcg.is/08C1HG0"target="_blank" class="addRecordBtn">Add Record</a>
         <div id="viewDiv"></div>
 
     </body>
